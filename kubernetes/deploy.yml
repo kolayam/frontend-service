@@ -15,6 +15,8 @@ spec:
       labels:
         nim-prod: frontend-service
     spec:
+      imagePullSecrets:
+      - name: do-registry
       containers:
       - env:
         - name: CONFIG_SERVER_FAILFAST
@@ -34,8 +36,6 @@ spec:
         - name: _JAVA_OPTIONS
           value: -Xmx512m -Xms50m
         image: registry.digitalocean.com/nimble/frontend-service:1.0
-        imagePullSecrets:
-        - name: do-registry
         imagePullPolicy: Always
         name: frontend-service
         ports:
