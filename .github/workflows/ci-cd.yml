@@ -1,4 +1,4 @@
-name: Build Production
+name: Build and Deploy
 
 on:
   push:
@@ -35,3 +35,22 @@ jobs:
 
       - name: Build production
         run: npm run build:production
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: docker build --platform linux/amd64 -t rannybal2024/nimble-frontend-service:${{ github.run_number }} .
+
+      - name: Push Docker image
+        run: docker push rannybal2024/nimble-frontend-service:${{ github.run_number }}
+
+      # - name: Set up kubectl
+      #   uses: azure/setup-kubectl@v1
+      #   with:
+      #     version: "v1.21.0"
+
+      # - name: Apply Kubernetes deployment
+      #   run: kubectl apply -f kubernetes/deploy.yml
+      #   env:
+      #     KUBECONFIG: ${{ secrets.KUBECONFIG }}
