@@ -1,0 +1,37 @@
+name: Build Production
+
+on:
+  push:
+    branches:
+      - for-jenkins
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "10"
+
+      - name: Install nvm
+        run: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
+          . ~/.nvm/nvm.sh
+          nvm install 10
+          nvm use 10
+
+      - name: Install dependencies
+        run: |
+          npm i --legacy-peer-deps
+          npm i --save-dev @types/jasmine@3.6.2 --legacy-peer-deps
+
+      - name: Set NODE_OPTIONS
+        run: echo "NODE_OPTIONS=--max-old-space-size=4096" >> $GITHUB_ENV
+
+      - name: Build production
+        run: npm run build:production
