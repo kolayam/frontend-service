@@ -16,34 +16,33 @@ spec:
         nim-prod: frontend-service
     spec:
       imagePullSecrets:
-      - name: do-registry
+        - name: do-registry
       containers:
-      - env:
-        - name: CONFIG_SERVER_FAILFAST
-          value: "true"
-        - name: CONFIG_SERVER_URI
-          value: http://config-server:8888
-        - name: DISCOVERY_ENABLED
-          value: "true"
-        - name: DISCOVERY_PREFER_IP
-          value: "false"
-        - name: DISCOVERY_SERVER_URI
-          value: http://service-discovery:8761
-        - name: LOGSTASH_URI
-          value: logstash:5000
-        - name: SPRING_PROFILES_ACTIVE
-          value: docker
-        - name: _JAVA_OPTIONS
-          value: -Xmx512m -Xms50m
-        image: registry.digitalocean.com/nimble/frontend-service:1.0
-        imagePullPolicy: Always
-        name: frontend-service
-        ports:
-        - containerPort: 80
+        - env:
+            - name: CONFIG_SERVER_FAILFAST
+              value: "true"
+            - name: CONFIG_SERVER_URI
+              value: http://config-server:8888
+            - name: DISCOVERY_ENABLED
+              value: "true"
+            - name: DISCOVERY_PREFER_IP
+              value: "false"
+            - name: DISCOVERY_SERVER_URI
+              value: http://service-discovery:8761
+            - name: LOGSTASH_URI
+              value: logstash:5000
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
+            - name: _JAVA_OPTIONS
+              value: -Xmx512m -Xms50m
+          image: IMAGE_TAG #assigned on runtime by github-action
+          imagePullPolicy: Always
+          name: frontend-service
+          ports:
+            - containerPort: 80
       restartPolicy: Always
 
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -53,8 +52,8 @@ metadata:
   name: frontend-service
 spec:
   ports:
-  - name: http
-    port: 80
-    targetPort: 80
+    - name: http
+      port: 80
+      targetPort: 80
   selector:
     nim-prod: frontend-service
